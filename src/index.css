@@ -1,0 +1,40 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+div#root {
+  height: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.AppContainer.AppContainer {
+  padding: 0px;
+}
+
+.MuiDataGrid-selectedRowCount.MuiDataGrid-selectedRowCount {
+  visibility: hidden;
+}
+
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  min-width: 120px;
+}
+
+.MuiDataGrid-menuIcon.MuiDataGrid-menuIcon.MuiDataGrid-menuIcon {
+  display: none;
+}
