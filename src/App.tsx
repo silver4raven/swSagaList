@@ -1,7 +1,14 @@
 //Core elements
-import React, { ReactElement, useState, useEffect } from "react";
+import React, {
+  ReactElement,
+  useState,
+  useEffect,
+  createContext,
+  useMemo,
+} from "react";
 import { GridSortModel } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { blueGrey } from "@mui/material/colors";
 //mui components
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -26,8 +33,8 @@ export default function App(): ReactElement | null {
   let ratitngs: rating[] = [];
   let emptyRating: rating = { Source: "", Value: "" };
 
-  const SwApi = "https://swapi.dev/api/films/?format=json";
   const [swMovies, getSwMovies] = useState(movies);
+  const [mode, setMode] = useState<"light" | "dark">("light");
   const [swMoviesFiltered, getSwMoviesFiltered] = useState(movies);
   const [selectedEpisode, selectEpisode] = useState(episode);
   const [searchQuery, setSearchQuerry] = useState("");
@@ -48,6 +55,9 @@ export default function App(): ReactElement | null {
       if (swMovies[i].title?.toLowerCase().indexOf(value) !== -1) {
         moviesFiltered.push(swMovies[i]);
       }
+      if (swMovies[i].episode_id === parseInt(value)) {
+        moviesFiltered.push(swMovies[i]);
+      }
     }
     getSwMoviesFiltered(moviesFiltered);
   }
@@ -64,7 +74,7 @@ export default function App(): ReactElement | null {
       console.log("***SwApi replied!***");
       movies = result.results;
       getSwMovies(movies);
-      for (const i in result.results) {
+      for (let i = 0; i < result.results.length; i++) {
         ratitngs.push(emptyRating);
       }
       for (const i in result.results) {
@@ -90,9 +100,7 @@ export default function App(): ReactElement | null {
     changeSearchQuerry(searchQuery);
   }, [swMovies]);
 
-  const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
-  const [mode, setMode] = React.useState<"light" | "dark">("light");
-  const colorMode = React.useMemo(
+  const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
@@ -100,7 +108,7 @@ export default function App(): ReactElement | null {
     }),
     []
   );
-  const theme = React.useMemo(
+  const theme = useMemo(
     () =>
       createTheme({
         palette: {
@@ -115,7 +123,7 @@ export default function App(): ReactElement | null {
       <ThemeProvider theme={theme}>
         <Paper
           className="App"
-          sx={{ height: "100%", bgcolor: "text.secondary" }}
+          sx={{ height: "100%", bgcolor: bgrColor, borderRadius: "0px" }}
         >
           <Container
             className="AppContainer"
@@ -143,19 +151,22 @@ export default function App(): ReactElement | null {
               colorMode={colorMode}
             />
             {swMovies.length === 0 ? (
-              <Box
-                sx={{
-                  width: "100%",
-                  alignContent: "center",
-                  paddingTop: "20%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Typography align="center">Loading. Please wait!</Typography>
-                <CircularProgress />
-              </Box>
+              <Stack direction="row" sx={{ flex: "1 1 auto" }}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    alignContent: "center",
+                    paddingTop: "20%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    bgcolor: "background.default",
+                  }}
+                >
+                  <Typography align="center">Loading. Please wait!</Typography>
+                  <CircularProgress />
+                </Box>
+              </Stack>
             ) : (
               <Stack direction="row" sx={{ flex: "1 1 auto" }}>
                 <DataTable
@@ -178,7 +189,9 @@ export default function App(): ReactElement | null {
   );
 }
 
-//Functions
+//Functions and variables
+
+const SwApi = "https://swapi.dev/api/films/?format=json";
 
 async function callRestApi(restEndpoint: string): Promise<any> {
   console.log("***Rest API call initiated!***");
@@ -201,3 +214,7 @@ function getAverageRating(ratings: rating[]): number {
       3
   );
 }
+
+const ColorModeContext = createContext({ toggleColorMode: () => {} });
+
+const bgrColor = blueGrey[500];

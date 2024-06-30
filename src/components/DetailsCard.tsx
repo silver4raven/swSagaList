@@ -16,20 +16,17 @@ interface Props {
 }
 
 export default function DetailsCard({ episode }: Props): ReactElement | null {
-  if (episode.poster) {
-    console.log(episode.poster);
-  } else {
-    console.log("string is:", episode.poster);
-  }
   if (JSON.stringify(episode) === JSON.stringify({})) {
     return (
-      <Typography align="center" paddingTop={"10%"} width={"100%"}>
-        "Please select an episode from the list and enjoy!!!"
-      </Typography>
+      <Card sx={{ minWidth: 275, width: "50%", p: 2, borderRadius: "0px" }}>
+        <Typography align="center" paddingTop={"10%"} width={"100%"}>
+          "Please select an episode from the list and enjoy!!!"
+        </Typography>
+      </Card>
     );
   } else {
     return (
-      <Card sx={{ minWidth: 275, width: "50%", p: 2 }}>
+      <Card sx={{ minWidth: 275, width: "50%", p: 2, borderRadius: "0px" }}>
         <Stack spacing={2}>
           <Typography variant="h6">
             Episode{" "}
@@ -101,14 +98,14 @@ export default function DetailsCard({ episode }: Props): ReactElement | null {
   }
 }
 
-//functions
+//functions and variables
 
 const borderColor = indigo[500];
 
 const boxStyle = {
   borderWidth: "0.1em",
   borderStyle: "solid",
-  borderColor: borderColor,
+  borderColor: "text.secondary",
   borderRadius: "0.3em",
   px: 1,
 };

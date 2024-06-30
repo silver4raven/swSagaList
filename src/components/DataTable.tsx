@@ -20,7 +20,6 @@ interface Props {
 }
 
 export default function DataTable({
-  style,
   movieList,
   onClick,
   sortModel,
