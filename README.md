@@ -1,11 +1,3 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
 ## App Features
 
 1. When the app is loaded, a list of the movies is displayed.
@@ -19,3 +11,8 @@ In the project directory, you can run:
 9. In case the API calls do not respond a relevant message is desplayed.
 
 Time of completion Sunday 30/06 5:00 a.m..
+
+## App Stack
+
+1. The app is writen in JS and typescript
+2. The MUI library has been used.
