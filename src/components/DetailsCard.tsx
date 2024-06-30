@@ -4,6 +4,8 @@ import { indigo } from "@mui/material/colors";
 //mui components
 import { Typography, Card, Stack, Box } from "@mui/material";
 import Rating from "@mui/material/Rating";
+import Tooltip from "@mui/material/Tooltip";
+import Skeleton from "@mui/material/Skeleton";
 //functions
 import convertToRoman from "../functionsAndInterfaces/convertToRoman";
 //interfaces
@@ -14,6 +16,11 @@ interface Props {
 }
 
 export default function DetailsCard({ episode }: Props): ReactElement | null {
+  if (episode.poster) {
+    console.log(episode.poster);
+  } else {
+    console.log("string is:", episode.poster);
+  }
   if (JSON.stringify(episode) === JSON.stringify({})) {
     return (
       <Typography align="center" paddingTop={"10%"} width={"100%"}>
@@ -30,24 +37,41 @@ export default function DetailsCard({ episode }: Props): ReactElement | null {
             {episode.title}
           </Typography>
           <Stack direction={"row"} spacing={2}>
-            <Box width={"30%"}>
-              <img width={"100%"} src={episode.poster} alt="poster"></img>
-            </Box>
+            {episode.poster ? (
+              <Box width={"30%"}>
+                <img width={"100%"} src={episode.poster} alt="poster"></img>
+              </Box>
+            ) : (
+              <Skeleton variant="rounded" width={"30%"} height={240} />
+            )}
+
             <Box width={"70%"}>
               <Typography>{episode.opening_crawl}</Typography>
             </Box>
           </Stack>
           <Typography>Directed by: {episode.director}</Typography>
-          <Stack direction={"row"} spacing={2}>
-            <Typography>Average rating:</Typography>
-            <Rating
-              name="read-only"
-              value={episode.average_rating ? episode.average_rating / 10 : 0}
-              readOnly
-              precision={0.5}
-              max={10}
-            />
-          </Stack>
+          <Tooltip
+            title={
+              episode.average_rating ? (
+                <Typography>
+                  Average rating: {episode.average_rating.toString()}%
+                </Typography>
+              ) : (
+                <Typography>Ratings not available. Please wait!</Typography>
+              )
+            }
+          >
+            <Stack direction={"row"} spacing={2}>
+              <Typography>Average rating:</Typography>
+              <Rating
+                name="read-only"
+                value={episode.average_rating ? episode.average_rating / 10 : 0}
+                readOnly
+                precision={0.5}
+                max={10}
+              />
+            </Stack>
+          </Tooltip>
           <Stack direction={"row"} spacing={1}>
             <Box sx={boxStyle}>
               <Typography variant="body2">

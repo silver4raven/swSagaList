@@ -9,9 +9,14 @@ import InputBase from "@mui/material/InputBase";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 //mui icons
 import SearchIcon from "@mui/icons-material/Search";
+
+import IconButton from "@mui/material/IconButton";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 
 interface Props {
   searchQuery: string;
@@ -33,47 +38,81 @@ export default function ToolsAppBar({
   shortBy,
   changeShortBy,
 }: Props): ReactElement | null {
-  console.log(shortBy);
+  const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+  const [mode, setMode] = React.useState<"light" | "dark">("light");
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+      },
+    }),
+    []
+  );
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode]
+  );
   return (
-    <Box>
-      <Box>
-        <AppBar position="static" style={{ boxShadow: "none" }}>
-          <Toolbar>
-            <FormControl sx={{ minWidth: "120px;" }}>
-              <InputLabel id="demo-simple-select-label">Short by</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={
-                  /* shortBy === "undefined" ? "release_date" :  */ shortBy
-                }
-                label="Short by"
-                onChange={(e) => changeShortBy(e.target.value)}
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <Box>
+          <AppBar position="static" style={{ boxShadow: "none" }}>
+            <Toolbar>
+              <FormControl sx={{ minWidth: "120px;" }}>
+                <InputLabel id="demo-simple-select-label">Short by</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={
+                    /* shortBy === "undefined" ? "release_date" :  */ shortBy
+                  }
+                  label="Short by"
+                  onChange={(e) => changeShortBy(e.target.value)}
+                >
+                  {shortTypes.map((shortType) => {
+                    return (
+                      <MenuItem value={shortType.value} key={shortType.value}>
+                        {shortType.typeLabel}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                />
+              </Search>
+              <Box sx={{ flexGrow: 1 }}></Box>
+              {theme.palette.mode} mode
+              <IconButton
+                sx={{ ml: 1 }}
+                onClick={colorMode.toggleColorMode}
+                color="inherit"
               >
-                {shortTypes.map((shortType) => {
-                  return (
-                    <MenuItem value={shortType.value} key={shortType.value}>
-                      {shortType.typeLabel}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-              />
-            </Search>
-          </Toolbar>
-        </AppBar>
-      </Box>
-    </Box>
+                {theme.palette.mode === "dark" ? (
+                  <Brightness7Icon />
+                ) : (
+                  <Brightness4Icon />
+                )}
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+        </Box>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 

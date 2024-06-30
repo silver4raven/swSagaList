@@ -58,6 +58,7 @@ export default function App(): ReactElement | null {
     }
   }
   useEffect(() => {
+    //Keys in omdbapi start with lowercase but in swapi start with upercase.
     callRestApi(SwApi).then((result) => {
       console.log("***SwApi replied!***");
       movies = result.results;
@@ -74,14 +75,8 @@ export default function App(): ReactElement | null {
         callRestApi(apiUrl).then((result) => {
           console.log("***OmdbApi replied!***");
           movies[parseInt(i)].ratings = result.Ratings;
-          let averagRating = -1;
-          //Keys in omdbapi start with lowercase but in swapi start with upercase.
-          averagRating = Math.round(
-            (parseFloat(result.Ratings[0].Value) * 10 +
-              parseFloat(result.Ratings[1].Value) +
-              parseFloat(result.Ratings[2].Value)) /
-              3
-          );
+          let averagRating = 0;
+          averagRating = getAverageRating(result.Ratings);
           movies[parseInt(i)].average_rating = averagRating;
           movies[parseInt(i)].poster = result.Poster;
           getSwMovies(movies.slice());
@@ -166,4 +161,13 @@ async function callRestApi(restEndpoint: string): Promise<any> {
 function removeSpaces(title: string): string {
   let safeTitle: string = title.replace(/ /g, "%20");
   return safeTitle;
+}
+
+function getAverageRating(ratings: rating[]): number {
+  return Math.round(
+    (parseFloat(ratings[0].Value) * 10 +
+      parseFloat(ratings[1].Value) +
+      parseFloat(ratings[2].Value)) /
+      3
+  );
 }

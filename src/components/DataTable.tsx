@@ -5,6 +5,8 @@ import React, { ReactElement } from "react";
 import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
 import Rating from "@mui/material/Rating";
 import { GridSortModel } from "@mui/x-data-grid";
+import { Typography } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 //interfaces
 import { episode } from "../functionsAndInterfaces/episode";
 
@@ -24,13 +26,13 @@ export default function DataTable({
   onSortModelChange,
 }: Props): ReactElement | null {
   const columns: GridColDef[] = [
-    { field: "episode_id", headerName: "Episode", width: 100 },
+    { field: "episode_id", headerName: "Episode", width: 80 },
     { field: "title", headerName: "Title", width: 180 },
     {
       field: "average_rating",
       headerName: "Av. Rating",
       type: "number",
-      width: 170,
+      width: 190,
       cellClassName: "font-tabular-nums",
       renderCell: (params) => avRating(params.value),
       /* valueGetter: (value, row) =>
@@ -64,14 +66,21 @@ export default function DataTable({
 }
 
 const avRating = (value: number) => (
-  <Rating
-    size="small"
-    name="read-only"
-    value={value ? value / 10 : 0}
-    readOnly
-    precision={0.5}
-    max={10}
-  />
+  <Tooltip
+    title={
+      value ? <Typography>Average rating: {value.toString()}%</Typography> : 0
+    }
+  >
+    <Rating
+      size="small"
+      name="read-only"
+      value={value ? value / 10 : 0}
+      readOnly
+      precision={0.5}
+      max={10}
+    />
+    {/* {<Typography>{value.toString()}</Typography>} */}
+  </Tooltip>
 );
 
 /* function numToName(number: number): string {
