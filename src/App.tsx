@@ -1,6 +1,7 @@
 //Core elements
 import React, { ReactElement, useState, useEffect } from "react";
 import { GridSortModel } from "@mui/x-data-grid";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 //mui components
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -89,62 +90,91 @@ export default function App(): ReactElement | null {
     changeSearchQuerry(searchQuery);
   }, [swMovies]);
 
+  const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+  const [mode, setMode] = React.useState<"light" | "dark">("light");
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+      },
+    }),
+    []
+  );
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode]
+  );
+
   return (
-    <Paper className="App" sx={{ height: "100%", bgcolor: "text.secondary" }}>
-      <Container
-        className="AppContainer"
-        sx={{
-          width: "100%",
-          height: "100%",
-          bgcolor: "common.white",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <ToolsAppBar
-          searchQuery={searchQuery}
-          onSearchChange={(value: string) => changeSearchQuerry(value)}
-          shortBy={sortModel[0] ? sortModel[0].field : ""}
-          changeShortBy={(newShortBy) => {
-            handleSortModelChange([
-              {
-                field: newShortBy,
-                sort: "desc",
-              },
-            ]);
-          }}
-        />
-        {swMovies.length === 0 ? (
-          <Box
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <Paper
+          className="App"
+          sx={{ height: "100%", bgcolor: "text.secondary" }}
+        >
+          <Container
+            className="AppContainer"
             sx={{
               width: "100%",
-              alignContent: "center",
-              paddingTop: "20%",
+              height: "100%",
+              bgcolor: "common.white",
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
             }}
           >
-            <Typography align="center">Loading. Please wait!</Typography>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <Stack direction="row" sx={{ flex: "1 1 auto" }}>
-            <DataTable
-              movieList={swMoviesFiltered}
-              onClick={(selectedEpisode: number) =>
-                changeEpisode(selectedEpisode)
-              }
-              onSortModelChange={(sortModel) => {
-                handleSortModelChange(sortModel);
+            <ToolsAppBar
+              searchQuery={searchQuery}
+              onSearchChange={(value: string) => changeSearchQuerry(value)}
+              shortBy={sortModel[0] ? sortModel[0].field : ""}
+              changeShortBy={(newShortBy) => {
+                handleSortModelChange([
+                  {
+                    field: newShortBy,
+                    sort: "desc",
+                  },
+                ]);
               }}
-              sortModel={sortModel}
+              theme={theme}
+              colorMode={colorMode}
             />
-            <DetailsCard episode={selectedEpisode} />
-          </Stack>
-        )}
-      </Container>
-    </Paper>
+            {swMovies.length === 0 ? (
+              <Box
+                sx={{
+                  width: "100%",
+                  alignContent: "center",
+                  paddingTop: "20%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Typography align="center">Loading. Please wait!</Typography>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Stack direction="row" sx={{ flex: "1 1 auto" }}>
+                <DataTable
+                  movieList={swMoviesFiltered}
+                  onClick={(selectedEpisode: number) =>
+                    changeEpisode(selectedEpisode)
+                  }
+                  onSortModelChange={(sortModel) => {
+                    handleSortModelChange(sortModel);
+                  }}
+                  sortModel={sortModel}
+                />
+                <DetailsCard episode={selectedEpisode} />
+              </Stack>
+            )}
+          </Container>
+        </Paper>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 

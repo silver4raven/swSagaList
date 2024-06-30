@@ -4,6 +4,7 @@ import React, { ReactElement } from "react";
 //mui components
 import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
 import Rating from "@mui/material/Rating";
+import Box from "@mui/material/Box";
 import { GridSortModel } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
@@ -50,7 +51,7 @@ export default function DataTable({
     onClick(params.row.episode_id);
   };
   return (
-    <div style={{ height: "100%", width: "50%" }}>
+    <Box sx={{ height: "100%", width: "50%", bgcolor: "background.default" }}>
       <DataGrid
         onRowClick={handleRowClick}
         getRowId={(row) => row.episode_id}
@@ -61,7 +62,7 @@ export default function DataTable({
         onSortModelChange={(newSortModel) => onSortModelChange(newSortModel)}
         autoPageSize
       />
-    </div>
+    </Box>
   );
 }
 

@@ -34,6 +34,11 @@ code {
   padding-bottom: 8px;
   min-width: 120px;
 }
+.css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select{
+  padding-top: 8px;
+  padding-bottom: 8px;
+  min-width: 120px;
+}
 
 .MuiDataGrid-menuIcon.MuiDataGrid-menuIcon.MuiDataGrid-menuIcon {
   display: none;

@@ -1,6 +1,7 @@
 //Core elements
 import React, { ReactElement } from "react";
 import { styled, alpha } from "@mui/material/styles";
+import { Theme } from "@mui/material/styles";
 //mui components
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -14,7 +15,6 @@ import Select from "@mui/material/Select";
 import SearchIcon from "@mui/icons-material/Search";
 
 import IconButton from "@mui/material/IconButton";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 
@@ -23,6 +23,8 @@ interface Props {
   onSearchChange: (value: string) => void;
   shortBy: string;
   changeShortBy: (newShortBy: string) => void;
+  theme: Theme;
+  colorMode: { toggleColorMode: () => void };
 }
 
 const shortTypes = [
@@ -37,82 +39,58 @@ export default function ToolsAppBar({
   onSearchChange,
   shortBy,
   changeShortBy,
+  theme,
+  colorMode,
 }: Props): ReactElement | null {
-  const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
-  const [mode, setMode] = React.useState<"light" | "dark">("light");
-  const colorMode = React.useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-      },
-    }),
-    []
-  );
-
-  const theme = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-        },
-      }),
-    [mode]
-  );
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <Box>
-          <AppBar position="static" style={{ boxShadow: "none" }}>
-            <Toolbar>
-              <FormControl sx={{ minWidth: "120px;" }}>
-                <InputLabel id="demo-simple-select-label">Short by</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={
-                    /* shortBy === "undefined" ? "release_date" :  */ shortBy
-                  }
-                  label="Short by"
-                  onChange={(e) => changeShortBy(e.target.value)}
-                >
-                  {shortTypes.map((shortType) => {
-                    return (
-                      <MenuItem value={shortType.value} key={shortType.value}>
-                        {shortType.typeLabel}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ "aria-label": "search" }}
-                  value={searchQuery}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                />
-              </Search>
-              <Box sx={{ flexGrow: 1 }}></Box>
-              {theme.palette.mode} mode
-              <IconButton
-                sx={{ ml: 1 }}
-                onClick={colorMode.toggleColorMode}
-                color="inherit"
-              >
-                {theme.palette.mode === "dark" ? (
-                  <Brightness7Icon />
-                ) : (
-                  <Brightness4Icon />
-                )}
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-        </Box>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+    <Box>
+      <AppBar position="static" style={{ boxShadow: "none" }}>
+        <Toolbar>
+          <FormControl sx={{ minWidth: "120px;" }}>
+            <InputLabel id="demo-simple-select-label">Short by</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={/* shortBy === "undefined" ? "release_date" :  */ shortBy}
+              label="Short by"
+              onChange={(e) => changeShortBy(e.target.value)}
+            >
+              {shortTypes.map((shortType) => {
+                return (
+                  <MenuItem value={shortType.value} key={shortType.value}>
+                    {shortType.typeLabel}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+            />
+          </Search>
+          <Box sx={{ flexGrow: 1 }}></Box>
+          {theme.palette.mode} mode
+          <IconButton
+            sx={{ ml: 1 }}
+            onClick={() => colorMode.toggleColorMode()}
+            color="inherit"
+          >
+            {theme.palette.mode === "dark" ? (
+              <Brightness7Icon />
+            ) : (
+              <Brightness4Icon />
+            )}
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }
 
